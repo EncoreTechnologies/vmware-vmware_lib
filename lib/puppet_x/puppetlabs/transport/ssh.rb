@@ -2,6 +2,12 @@
 
 module PuppetX::Puppetlabs::Transport
 
+  #### Begin Encore Mods
+  ## On all nodes, except the vmware controller we don't want to install net-ssh gem
+  ## Requiring this gem makes puppet fail on all nodes before it gets a chance
+  ## to even run. This doesn't detract any functionality from the vcenter module
+  ## because this transport isn't even used. Also it allows us to install net-ssh
+  ## using puppet on a first run, then utilize this transport on subsequent runs.
   begin 
     
     require 'net/ssh' unless Puppet.run_mode.master?
@@ -57,4 +63,5 @@ module PuppetX::Puppetlabs::Transport
   rescue LoadError => e
     Puppet.debug("#{self.class} - Unable to create SSH transport because net-ssh gem is not installed.")
   end
+  #### End Encore Mods
 end
